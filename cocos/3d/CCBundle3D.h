@@ -84,7 +84,7 @@ protected:
 
     bool loadJson(const std::string& path);
     bool loadBinary(const std::string& path);
-    bool loadPrimitive(const std::string& type);//md:20141127 add primitive data loader, for simple 3d draw tasks
+    bool loadPrimitive(MeshDatas& meshdatas,const std::string& type);//md:20141127 add primitive data loader, for simple 3d draw tasks
     bool loadMeshDatasJson(MeshDatas& meshdatas);
     bool loadMeshDataJson_0_1(MeshDatas& meshdatas);
     bool loadMeshDataJson_0_2(MeshDatas& meshdatas);

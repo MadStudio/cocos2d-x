@@ -52,6 +52,9 @@ class CC_DLL Sprite3D : public Node, public BlendProtocol
 public:
     /** creates a Sprite3D*/
     static Sprite3D* create(const std::string &modelPath);
+    
+    //md:20141128 create a Spite3D using primitive objects like triangle, cude, sphere and etc.
+    static Sprite3D* createPimitive(const std::string &primitiveType);
   
     // creates a Sprite3D. It only supports one texture, and overrides the internal texture with 'texturePath'
     static Sprite3D* create(const std::string &modelPath, const std::string &texturePath);
@@ -127,6 +130,9 @@ CC_CONSTRUCTOR_ACCESS:
     Sprite3D();
     virtual ~Sprite3D();
     bool initWithFile(const std::string &path);
+    
+    //md:20141128 init sprite with primitive mesh and debugging textures
+    bool initWithPrimitive(const std::string &path);
     
     bool initFrom(const NodeDatas& nodedatas, const MeshDatas& meshdatas, const MaterialDatas& materialdatas);
     

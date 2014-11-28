@@ -667,7 +667,7 @@ bool Bundle3D::loadMeshDatasBinary_0_2(MeshDatas& meshdatas)
     return true;
 }
 
-bool Bundle3D::loadPrimitive(const std::string &type)
+bool Bundle3D::loadPrimitive(MeshDatas& meshdatas,const std::string &type)
 {
     MeshData* meshData = new (std::nothrow) MeshData();
     MeshVertexAttrib tempAttrib;
@@ -698,8 +698,19 @@ bool Bundle3D::loadPrimitive(const std::string &type)
         memset(normals, 0, sizeof(normals));
         MathUtil::flatVertexNormal(vTriangle, 9, idx, 3, normals);
         
-        
-        
+        meshData->vertexSizeInFloat = 9;
+        for (int i =0; i<9; i++) {
+            meshData->vertex.push_back(vTriangle[i]);
+        }
+        meshData->subMeshIds.push_back("default");
+        std::vector<unsigned short>      indexArray;
+        for (int i=0; i<3; i++) {
+            indexArray.push_back(idx[i]);
+        }
+        meshData->subMeshIndices.push_back(indexArray);
+        meshData->numIndex = 3;
+        meshdatas.meshDatas.push_back(meshData);
+        return true;
     }
     
     if(type == "CUBE")

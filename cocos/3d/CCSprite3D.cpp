@@ -73,6 +73,22 @@ Sprite3D* Sprite3D::create(const std::string &modelPath, const std::string &text
     return sprite;
 }
 
+Sprite3D* Sprite3D::createPimitive(const std::string &primitiveType)
+{
+    auto sprite = new (std::nothrow) Sprite3D();
+    if (sprite && sprite->initWithPrimitive(primitiveType))
+    {
+        sprite->_contentSize = sprite->getBoundingBox().size;
+        sprite->autorelease();
+        return sprite;
+    }else
+    {
+        log("in Sprite3D::createPimitive fail to create primitive sprite");
+    }
+    CC_SAFE_DELETE(sprite);
+    return nullptr;
+}
+
 bool Sprite3D::loadFromCache(const std::string& path)
 {
     auto spritedata = Sprite3DCache::getInstance()->getSpriteData(path);
@@ -187,6 +203,18 @@ Sprite3D::~Sprite3D()
     _meshVertexDatas.clear();
     CC_SAFE_RELEASE_NULL(_skeleton);
     removeAllAttachNode();
+}
+//to do: Sprite3D initialization
+bool Sprite3D::initWithPrimitive(const std::string &primitiveType)
+{
+    _meshes.clear();
+    _meshVertexDatas.clear();
+    CC_SAFE_RELEASE_NULL(_skeleton);
+    removeAllAttachNode();
+    
+    
+    
+    return false;
 }
 
 bool Sprite3D::initWithFile(const std::string &path)
