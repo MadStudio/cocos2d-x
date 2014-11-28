@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include "CCBundleReader.h"
 #include "base/CCData.h"
 #include "json/document.h"
+#include "math/MathUtil.h"
 
 #define BUNDLE_TYPE_SCENE               1
 #define BUNDLE_TYPE_NODE                2
@@ -665,6 +666,50 @@ bool Bundle3D::loadMeshDatasBinary_0_2(MeshDatas& meshdatas)
     
     return true;
 }
+
+bool Bundle3D::loadPrimitive(const std::string &type)
+{
+    MeshData* meshData = new (std::nothrow) MeshData();
+    MeshVertexAttrib tempAttrib;
+    
+    //use 3 basic attributes of vertex
+    meshData->attribCount = 3;
+    meshData->attribs.resize(meshData->attribCount);
+    tempAttrib.size = 3;
+    tempAttrib.type = GL_FLOAT;
+    tempAttrib.vertexAttrib = parseGLProgramAttribute("VERTEX_ATTRIB_POSITION");
+    meshData->attribs[0] = tempAttrib;
+    
+    tempAttrib.size = 3;
+    tempAttrib.type = GL_FLOAT;
+    tempAttrib.vertexAttrib = parseGLProgramAttribute("VERTEX_ATTRIB_NORMAL");
+    meshData->attribs[1] = tempAttrib;
+    
+    tempAttrib.size = 2;
+    tempAttrib.type = GL_FLOAT;
+    tempAttrib.vertexAttrib = parseGLProgramAttribute("VERTEX_ATTRIB_TEX_COORD");
+    meshData->attribs[2] = tempAttrib;
+    
+    
+    if (type == "TRIANGLE") {
+        const float vTriangle[] ={0.5,0.0,0.0,0.0,0.5,0.0,0.0,0.0,0.0};
+        const unsigned short idx[] = {0,1,2};
+        float normals[9];
+        memset(normals, 0, sizeof(normals));
+        MathUtil::flatVertexNormal(vTriangle, 9, idx, 3, normals);
+        
+        
+        
+    }
+    
+    if(type == "CUBE")
+    {
+        
+    }
+    
+    return false;
+}
+
 bool  Bundle3D::loadMeshDatasJson(MeshDatas& meshdatas)
 {
     const rapidjson::Value& mesh_data_array = _jsonReader[MESHES];

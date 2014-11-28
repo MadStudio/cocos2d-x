@@ -73,7 +73,7 @@ private:
     //Indicates that if neon is enabled
     static bool isNeon32Enabled();
     static bool isNeon64Enabled();
-private:
+public:
 #ifdef __SSE__
     static void addMatrix(const __m128 m[4], float scalar, __m128 dst[4]);
     
@@ -110,7 +110,13 @@ private:
     static void transformVec4(const float* m, const float* v, float* dst);
 
     static void crossVec3(const float* v1, const float* v2, float* dst);
-
+    
+    static void normalize(float* v);
+    
+    static void triangleNormal(const float* v1,const float* v2,const float* v3,float* normal);
+    
+    static void flatVertexNormal(const float* vx,const unsigned short vxN,const unsigned short* idx,const unsigned short idxN,float* normals);
+    
 };
 
 NS_CC_MATH_END

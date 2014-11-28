@@ -94,6 +94,90 @@ void MathUtil::smooth(float* x, float target, float elapsedTime, float riseTime,
     }
 }
 
+/*
+ *md: 20141127 normalize a given vector
+ *io: v  vector to be normalized
+*/
+
+void MathUtil::normalize(float *v)
+{
+    float d = sqrtf(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
+    d = 1.0f/d;
+    v[0] *= d;
+    v[1] *= d;
+    v[2] *= d;
+}
+
+
+/*
+ *md: 20141127 caculate normal vector(normalized) for a triangle
+ *in: v1,v2,v3  vertexes for the triangle
+ *out:normal    normalized normal vector
+ */
+void MathUtil::triangleNormal(const float *v1, const float *v2, const float *v3, float *normal)
+{
+    float d1[3],d2[3];
+    for (int i = 0; i<3; i++) {
+        d1[i] = v1[i] - v2[i];
+        d2[i] = v2[i] - v3[i];
+    }
+    
+    normal[0] = d1[1]*d2[2] - d1[2]*d1[1];
+    normal[1] = d1[2]*d2[0] - d1[0]*d1[2];
+    normal[2] = d1[0]*d2[1] - d1[1]*d1[0];
+    
+    normalize(normal);
+    
+}
+
+/*
+ *md: 20141128 caculate flat vertexnormal by averaging normals of faces that vetex in
+ *in: vx array contains all vertexes
+ *in: vxN num of vertexes
+ *in: idx array contains indices of vertexes to make a triangle face
+ *in: idxN num of indices
+ *out:normals   normalized normal vector for all vertexes
+ */
+
+void MathUtil::flatVertexNormal(const float *vx,const unsigned short vxN,const unsigned short *idx,const unsigned short idxN, float *normals)
+{
+    unsigned short idx1,idx2,idx3 = 0;
+    float nor[3];
+    unsigned short average[vxN];
+    float av = 0.0f;
+    for (unsigned short i=0; i<vxN; i++) {
+        average[i] = 0;
+    }
+    
+    for (unsigned short i =0; i<idxN; i+=3) {
+        idx1 = idx[i];
+        idx2 = idx[i+1];
+        idx3 = idx[i+2];
+        average[idx1]++;
+        average[idx2]++;
+        average[idx3]++;
+        triangleNormal(&vx[idx1*3], &vx[idx2*3], &vx[idx3*3], nor);
+        normals[idx1*3] += nor[0];
+        normals[idx1*3+1] += nor[1];
+        normals[idx1*3+2] += nor[2];
+        normals[idx2*3] += nor[0];
+        normals[idx2*3+1] += nor[1];
+        normals[idx2*3+2] += nor[2];
+        normals[idx3*3] += nor[0];
+        normals[idx3*3+1] += nor[1];
+        normals[idx3*3+2] += nor[2];
+    }
+    
+    for (unsigned short i=0; i<vxN; i++) {
+        av = 1.0f/(float)average[i];
+        normals[i*3] *= av;
+        normals[i*3+1] *= av;
+        normals[i*3+2] *= av;
+        normalize(&normals[i*3]);
+    }
+    
+}
+
 bool MathUtil::isNeon32Enabled()
 {
 #ifdef USE_NEON32
