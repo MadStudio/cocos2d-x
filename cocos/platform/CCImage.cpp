@@ -1749,6 +1749,38 @@ bool Image::initWithTGAData(tImageTGA* tgaData)
     return ret;
 }
 
+//first we have to initialize the image data, then use the data to initialize Image object
+bool Image::initWithDefaultData()
+{
+    do {
+        //red and white chessboard like grid image data
+        for (int i=0; i<64; i++) {
+            for (int j=0; j<64; j++) {
+                if (i%2==0) {
+                    DefaultData[i*64+j] = 127;
+                    DefaultData[i*64+j+1] = 0;
+                    DefaultData[i*64+j+2] = 0;
+                    DefaultData[i*64+j+3] = 0;
+                }else{
+                    DefaultData[i*64+j] = 255;
+                    DefaultData[i*64+j+1] = 255;
+                    DefaultData[i*64+j+2] = 255;
+                    DefaultData[i*64+j+3] = 0;
+                }
+            }
+        }
+        
+        _renderFormat = Texture2D::PixelFormat::RGBA8888;
+        _width = 64;
+        _height = 64;
+        _data = DefaultData;
+        _dataLen = 64*64*4;
+        _fileType = Format::TGA;
+        _hasPremultipliedAlpha = false;
+        return true;
+    } while (false);
+}
+
 namespace
 {
     static const uint32_t makeFourCC(char ch0, char ch1, char ch2, char ch3)

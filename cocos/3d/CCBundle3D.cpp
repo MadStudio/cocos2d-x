@@ -32,6 +32,10 @@ THE SOFTWARE.
 #include "base/CCData.h"
 #include "json/document.h"
 #include "math/MathUtil.h"
+#include "renderer/CCTexture2D.h"
+#include "renderer/CCTextureCache.h"
+#include "platform/CCImage.h"
+#include "base/CCDirector.h"
 
 #define BUNDLE_TYPE_SCENE               1
 #define BUNDLE_TYPE_NODE                2
@@ -693,16 +697,24 @@ bool Bundle3D::loadPrimitive(MeshDatas& meshdatas,const std::string &type)
     
     if (type == "TRIANGLE") {
         const float vTriangle[] ={0.5,0.0,0.0,0.0,0.5,0.0,0.0,0.0,0.0};
+        const float uv[] = {1.0,0.0,0.0,1.0,1.0,1.0};
         const unsigned short idx[] = {0,1,2};
         float normals[9];
         memset(normals, 0, sizeof(normals));
         MathUtil::flatVertexNormal(vTriangle, 9, idx, 3, normals);
         
         meshData->vertexSizeInFloat = 9;
-        for (int i =0; i<9; i++) {
+        for (int i =0; i<3; i++) {
             meshData->vertex.push_back(vTriangle[i]);
+            meshData->vertex.push_back(vTriangle[i+1]);
+            meshData->vertex.push_back(vTriangle[i+2]);
+            meshData->vertex.push_back(normals[i]);
+            meshData->vertex.push_back(normals[i+1]);
+            meshData->vertex.push_back(normals[i+2]);
+            meshData->vertex.push_back(uv[i]);
+            meshData->vertex.push_back(uv[i+1]);
         }
-        meshData->subMeshIds.push_back("default");
+        meshData->subMeshIds.push_back("P_TRIANGLE");
         std::vector<unsigned short>      indexArray;
         for (int i=0; i<3; i++) {
             indexArray.push_back(idx[i]);
@@ -998,6 +1010,25 @@ bool  Bundle3D::loadMaterialsJson(MaterialDatas& materialdatas)
     }
     return true;
 }
+//md:20141201 do some nusty trick to have an default material for primitive mesh
+bool Bundle3D::loadDefaultMaterial(cocos2d::MaterialDatas &materialdatas)
+{
+    NMaterialData materialData;
+    materialData.id = "defaultMat";
+    cocos2d::Image* img = new (std::nothrow) cocos2d::Image();
+    img->initWithDefaultData();
+    Director::getInstance()->getTextureCache()->addImage(img,"Default_Texture");
+    NTextureData textureData;
+    textureData.filename = "Default_Texture";
+    textureData.type = NTextureData::Usage::Diffuse;
+    textureData.wrapS = parseGLType("REPEAT");
+    textureData.wrapT = parseGLType("REPEAT");
+    materialData.textures.push_back(textureData);
+    materialdatas.materials.push_back(materialData);
+    return true;
+}
+
+
 bool Bundle3D::loadJson(const std::string& path)
 {
     clear();

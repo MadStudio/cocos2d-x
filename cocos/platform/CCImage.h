@@ -111,7 +111,8 @@ public:
     * @lua NA
     */
     bool initWithImageData(const unsigned char * data, ssize_t dataLen);
-
+    //md:20141201 init an Image with default data, create a image for default texture
+    bool initWithDefaultData();
     // @warning kFmtRawData only support RGBA8888
     bool initWithRawData(const unsigned char * data, ssize_t dataLen, int width, int height, int bitsPerComponent, bool preMulti = false);
 
@@ -159,6 +160,7 @@ protected:
     bool initWithETCData(const unsigned char * data, ssize_t dataLen);
     bool initWithS3TCData(const unsigned char * data, ssize_t dataLen);
     bool initWithATITCData(const unsigned char *data, ssize_t dataLen);
+
     typedef struct sImageTGA tImageTGA;
     bool initWithTGAData(tImageTGA* tgaData);
 
@@ -185,7 +187,9 @@ protected:
     // false if we cann't auto detect the image is premultiplied or not.
     bool _hasPremultipliedAlpha;
     std::string _filePath;
-
+    
+    //md:20141201 default 64*64 RGBA8888 image data,
+    unsigned char DefaultData[64*64*4];
 
 protected:
     // noncopyable

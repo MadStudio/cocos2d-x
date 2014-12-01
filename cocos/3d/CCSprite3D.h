@@ -144,6 +144,9 @@ CC_CONSTRUCTOR_ACCESS:
     
     /**load from .c3b or .c3t*/
     bool loadFromC3x(const std::string& path);
+    
+    //md:20141201 use primitive data like triangle ,cude,sphere to create Sprite3d object
+    bool loadFromPrimitive(const std::string& primitiveType);
 
     /**draw*/
     virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;

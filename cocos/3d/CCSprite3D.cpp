@@ -188,6 +188,31 @@ bool Sprite3D::loadFromC3x(const std::string& path)
     return false;
 }
 
+bool Sprite3D::loadFromPrimitive(const std::string &primitiveType)
+{
+    auto bundle = Bundle3D::getInstance();
+    MeshDatas meshdatas;
+    MaterialDatas* materialdatas = new (std::nothrow) MaterialDatas();
+    NodeDatas*   nodeDatas = new (std::nothrow) NodeDatas();
+    if (bundle->loadPrimitive(meshdatas, primitiveType)&&bundle->loadDefaultMaterial(*materialdatas)&& initFrom(*nodeDatas, meshdatas, *materialdatas)) {
+        //add to cache
+        auto data = new (std::nothrow) Sprite3DCache::Sprite3DData();
+        data->materialdatas = materialdatas;
+        data->nodedatas = nodeDatas;
+        data->meshVertexDatas = _meshVertexDatas;
+        for (const auto mesh : _meshes) {
+            data->glProgramStates.pushBack(mesh->getGLProgramState());
+        }
+        Sprite3DCache::getInstance()->addSprite3DData(primitiveType, data);
+        return true;
+    }
+    
+    delete materialdatas;
+    delete nodeDatas;
+    
+    return false;
+}
+
 Sprite3D::Sprite3D()
 : _skeleton(nullptr)
 , _blend(BlendFunc::ALPHA_NON_PREMULTIPLIED)
@@ -211,10 +236,11 @@ bool Sprite3D::initWithPrimitive(const std::string &primitiveType)
     _meshVertexDatas.clear();
     CC_SAFE_RELEASE_NULL(_skeleton);
     removeAllAttachNode();
+    if (loadFromCache(primitiveType))
+        return true;
     
-    
-    
-    return false;
+    return loadFromPrimitive(primitiveType);    
+
 }
 
 bool Sprite3D::initWithFile(const std::string &path)

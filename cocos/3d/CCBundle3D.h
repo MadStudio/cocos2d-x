@@ -80,11 +80,14 @@ public:
     //load .obj file
     static bool loadObj(MeshDatas& meshdatas, MaterialDatas& materialdatas, NodeDatas& nodedatas, const std::string& fullPath, const char* mtl_basepath = nullptr);
   
+    bool loadPrimitive(MeshDatas& meshdatas,const std::string& type);//md:20141127 add primitive data loader, for simple 3d draw tasks
+    bool loadDefaultMaterial(MaterialDatas& materialdatas);//md:20141201 add default material loader, use default image to create texture then use this texture to create material
+    
 protected:
 
     bool loadJson(const std::string& path);
     bool loadBinary(const std::string& path);
-    bool loadPrimitive(MeshDatas& meshdatas,const std::string& type);//md:20141127 add primitive data loader, for simple 3d draw tasks
+
     bool loadMeshDatasJson(MeshDatas& meshdatas);
     bool loadMeshDataJson_0_1(MeshDatas& meshdatas);
     bool loadMeshDataJson_0_2(MeshDatas& meshdatas);
