@@ -680,39 +680,45 @@ bool Bundle3D::loadPrimitive(MeshDatas& meshdatas,const std::string &type)
     meshData->attribCount = 3;
     meshData->attribs.resize(meshData->attribCount);
     tempAttrib.size = 3;
+    tempAttrib.attribSizeBytes = 3*sizeof(float);
     tempAttrib.type = GL_FLOAT;
     tempAttrib.vertexAttrib = parseGLProgramAttribute("VERTEX_ATTRIB_POSITION");
     meshData->attribs[0] = tempAttrib;
     
     tempAttrib.size = 3;
+    tempAttrib.attribSizeBytes = 3*sizeof(float);
     tempAttrib.type = GL_FLOAT;
     tempAttrib.vertexAttrib = parseGLProgramAttribute("VERTEX_ATTRIB_NORMAL");
     meshData->attribs[1] = tempAttrib;
     
     tempAttrib.size = 2;
+    tempAttrib.attribSizeBytes = 2*sizeof(float);
     tempAttrib.type = GL_FLOAT;
     tempAttrib.vertexAttrib = parseGLProgramAttribute("VERTEX_ATTRIB_TEX_COORD");
     meshData->attribs[2] = tempAttrib;
     
     
     if (type == "TRIANGLE") {
-        const float vTriangle[] ={0.5,0.0,0.0,0.0,0.5,0.0,0.0,0.0,0.0};
-        const float uv[] = {1.0,0.0,0.0,1.0,1.0,1.0};
+        
+        log("PRIMITIVE TYPE => TRIANGLE");
+        
+        const float vTriangle[] ={0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0};
+        const float uv[] = {0.0,0.0,1.0,0.0,0.0,1.0};
         const unsigned short idx[] = {0,1,2};
-        float normals[9];
+        static float normals[9];
         memset(normals, 0, sizeof(normals));
         MathUtil::flatVertexNormal(vTriangle, 9, idx, 3, normals);
         
-        meshData->vertexSizeInFloat = 9;
+        meshData->vertexSizeInFloat = 8;
         for (int i =0; i<3; i++) {
-            meshData->vertex.push_back(vTriangle[i]);
-            meshData->vertex.push_back(vTriangle[i+1]);
-            meshData->vertex.push_back(vTriangle[i+2]);
-            meshData->vertex.push_back(normals[i]);
-            meshData->vertex.push_back(normals[i+1]);
-            meshData->vertex.push_back(normals[i+2]);
-            meshData->vertex.push_back(uv[i]);
-            meshData->vertex.push_back(uv[i+1]);
+            meshData->vertex.push_back(vTriangle[i*3]);
+            meshData->vertex.push_back(vTriangle[i*3+1]);
+            meshData->vertex.push_back(vTriangle[i*3+2]);
+            meshData->vertex.push_back(normals[i*3]);
+            meshData->vertex.push_back(normals[i*3+1]);
+            meshData->vertex.push_back(normals[i*3+2]);
+            meshData->vertex.push_back(uv[i*2]);
+            meshData->vertex.push_back(uv[i*2+1]);
         }
         meshData->subMeshIds.push_back("P_TRIANGLE");
         std::vector<unsigned short>      indexArray;
@@ -722,12 +728,13 @@ bool Bundle3D::loadPrimitive(MeshDatas& meshdatas,const std::string &type)
         meshData->subMeshIndices.push_back(indexArray);
         meshData->numIndex = 3;
         meshdatas.meshDatas.push_back(meshData);
+        log("finished meshdata initilaization");
         return true;
     }
     
     if(type == "CUBE")
     {
-        
+        return true;
     }
     
     return false;
@@ -787,6 +794,19 @@ bool  Bundle3D::loadMeshDatasJson(MeshDatas& meshdatas)
     }
     return true;
 }
+
+bool Bundle3D::loadDefaultNodes(cocos2d::NodeDatas &nodedatas)
+{
+    auto node= new (std::nothrow) NodeData();
+    auto modelnode = new (std::nothrow) ModelData();
+    modelnode->matrialId = "defaultMat";
+    modelnode->subMeshId = "P_TRIANGLE";
+    node->modelNodeDatas.push_back(modelnode);
+    nodedatas.nodes.push_back(node);
+    return true;
+}
+
+
 bool Bundle3D::loadNodes(NodeDatas& nodedatas)
 {
     if (_version == "0.1" || _version == "1.2" || _version == "0.2")

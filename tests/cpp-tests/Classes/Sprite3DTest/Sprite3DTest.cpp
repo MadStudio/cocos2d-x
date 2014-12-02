@@ -175,17 +175,26 @@ void Sprite3DBasicTest::addNewSpriteWithCoords(Vec2 p)
 //    auto sprite = Sprite3D::create("sprite3dTest/scene01.obj");
     
     //option 2: load obj and assign the texture
-    auto sprite = Sprite3D::create("Sprite3DTest/boss1.obj");
-    sprite->setScale(3.f);
-    sprite->setTexture("Sprite3DTest/boss.png");
-    
+//    auto sprite = Sprite3D::create("Sprite3DTest/boss1.obj");
+//    sprite->setScale(3.f);
+//    sprite->setTexture("Sprite3DTest/boss.png");
+
     //
     //sprite->setEffect(cocos2d::EFFECT_OUTLINE);
     
     //add to scene
-    addChild( sprite );
+//    addChild( sprite );
     
-    sprite->setPosition( Vec2( p.x, p.y) );
+    auto sprite1 = Sprite3D::createPimitive("TRIANGLE");
+    sprite1->setScale(30.f);
+    addChild(sprite1);
+    auto tex = Director::getInstance()->getTextureCache()->getTextureForKey("Default_Texture");
+    auto s2p = Sprite::createWithTexture(tex);
+    addChild(s2p);
+    s2p->setScale(5, 5);
+    
+//    sprite->setPosition( Vec2( p.x, p.y) );
+    sprite1->setPosition(Vec2( p.x, p.y) );
     
     ActionInterval* action;
     float random = CCRANDOM_0_1();
@@ -203,7 +212,7 @@ void Sprite3DBasicTest::addNewSpriteWithCoords(Vec2 p)
     auto action_back = action->reverse();
     auto seq = Sequence::create( action, action_back, nullptr );
     
-    sprite->runAction( RepeatForever::create(seq) );
+    sprite1->runAction( RepeatForever::create(seq) );
 }
 
 void Sprite3DBasicTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)

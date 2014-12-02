@@ -194,7 +194,8 @@ bool Sprite3D::loadFromPrimitive(const std::string &primitiveType)
     MeshDatas meshdatas;
     MaterialDatas* materialdatas = new (std::nothrow) MaterialDatas();
     NodeDatas*   nodeDatas = new (std::nothrow) NodeDatas();
-    if (bundle->loadPrimitive(meshdatas, primitiveType)&&bundle->loadDefaultMaterial(*materialdatas)&& initFrom(*nodeDatas, meshdatas, *materialdatas)) {
+    if (bundle->loadPrimitive(meshdatas, primitiveType)&&bundle->loadDefaultMaterial(*materialdatas)&&bundle->loadDefaultNodes(*nodeDatas)&& initFrom(*nodeDatas, meshdatas, *materialdatas)) {
+        log("Sprite3D::loadFromPrimitive");
         //add to cache
         auto data = new (std::nothrow) Sprite3DCache::Sprite3DData();
         data->materialdatas = materialdatas;

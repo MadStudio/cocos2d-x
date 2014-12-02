@@ -1757,15 +1757,15 @@ bool Image::initWithDefaultData()
         for (int i=0; i<64; i++) {
             for (int j=0; j<64; j++) {
                 if (i%2==0) {
-                    DefaultData[i*64+j] = 127;
-                    DefaultData[i*64+j+1] = 0;
-                    DefaultData[i*64+j+2] = 0;
-                    DefaultData[i*64+j+3] = 0;
+                    DefaultData[i*64*4+j*4] = 127;
+                    DefaultData[i*64*4+j*4+1] = 0;
+                    DefaultData[i*64*4+j*4+2] = 0;
+                    DefaultData[i*64*4+j*4+3] = 255;
                 }else{
-                    DefaultData[i*64+j] = 255;
-                    DefaultData[i*64+j+1] = 255;
-                    DefaultData[i*64+j+2] = 255;
-                    DefaultData[i*64+j+3] = 0;
+                    DefaultData[i*64*4+j*4] = 255;
+                    DefaultData[i*64*4+j*4+1] = 255;
+                    DefaultData[i*64*4+j*4+2] = 255;
+                    DefaultData[i*64*4+j*4+3] = 255;
                 }
             }
         }

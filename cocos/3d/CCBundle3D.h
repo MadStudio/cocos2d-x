@@ -82,6 +82,7 @@ public:
   
     bool loadPrimitive(MeshDatas& meshdatas,const std::string& type);//md:20141127 add primitive data loader, for simple 3d draw tasks
     bool loadDefaultMaterial(MaterialDatas& materialdatas);//md:20141201 add default material loader, use default image to create texture then use this texture to create material
+    bool loadDefaultNodes(NodeDatas& nodedatas);//md:20141202 add default node to make mesh use material as skin of the mesh
     
 protected:
 
